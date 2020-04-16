@@ -1,6 +1,16 @@
 \documentclass{report}
-\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{titlesec}
+
+\titleformat{\chapter}{\normalfont\LARGE\bfseries}{\thechapter}{1em}{}
+\titlespacing*{\chapter}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+
+\titleformat{\chapter}
+  {\normalfont\LARGE\bfseries}{\thechapter}{1em}{}
+\titlespacing*{\chapter}{0pt}{3.5ex plus 1ex minus .2ex}{2.3ex plus .2ex}
+
 
 \title{RSO}
 \author{r.galczak}
@@ -10,10 +20,10 @@
 
 \maketitle
 
-\chapter*{Wstęp}
-\section{Sekcja 1}
+\chapter{Wymagania}
 
-\subsection{Posekcja}
+\input{requirements}
+
 
 \chapter*{Nowy rozdział}
 

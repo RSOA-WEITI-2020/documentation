@@ -1,0 +1,94 @@
+Rozdział ten przybliża wymagania funkcjonalne oraz niefunkcjonalne, które aplikacja wraz z systemem miały spełnić.
+Zapewnia też krótkie omówienie każdego z przedstawionych wymagań.
+
+\section{Wymagania funkcjonalne}
+
+System jest dość prosty w związku z czym nie posiada wielu wymagań funkcjonalnych.
+Wymagania te można zgrupować w ramach dwóch zagadnień. 
+
+Wymagania związane z \textbf{zarządzaniem użytkownikami} dotyczą procedur, które 
+muszą zostać zapewnione w związku z RODO, ale też funkcjonalności pozwalających na
+podstawowe operacje w związku z tworzeniem i edycją użytowników.
+
+Wymagania związanie z \textbf{zarządzaniem zgłoszeniami} dotyczą bezpośrednio funkcjonalności 
+związanych z możliwością tworzenia i sprawdzania stany zgłoszeń użytkownika.
+Część funkcjonalności została dodana, tak jak w przypadku zarządzania użytkownikami, ze względu
+na zgodność z RODO.
+
+\subsection{Zarządzanie użytkownikami}
+\label{sec:user_func}
+
+\subsubsection{Tworzenie nowego konta}
+
+Użytkownik musi mieć możliwość stworzenia dla siebie konta, którego później będzie używał do
+korzystania z aplikacji. Konto musi być unikatowe według wybranego identyfikatora (np. adresu email).
+Przy rejestracji konta użytkownik podaje dane billingowe, które podlegają pod ochronę na mocy RODO. 
+
+\subsubsection{Usunięcie konta użytkownika}
+
+Użytkownik musi mieć możliwość usunięcia swojego konta z poziomu aplikacji.
+Na takie konto nie będzie można się już zalogować. 
+Można będzie też założyć nowe konto z identyfikatorem takim samym jak to usunięte. 
+
+\subsubsection{Usunięcie konta wraz z wszystkimi powiązanymi danymi}
+
+Użytkownik musi mieć możliwość wystosowania prośby o lub bezpośrednie usunięcie
+swojego konta z wszystkimi powiązanymi z nim danymi np. historia zgłoszeń, wyniki obliczeń.
+Możliwość ta jest wymagana na mocy RODO.
+
+\subsubsection{Pobranie wszystkich danych związanych z kontem}
+
+Użytkownik musi mieć możliwość pobrania wszystkich informacji przechowywanych o nim
+w bazach danych systemu. Wchodzą w to dane podane przy rejestracji jak i
+historia wszystkich zgłoszeń użytkownika. 
+Funkcjonalność ta jest wymagana przez RODO.
+
+\subsection{Zarządzanie zgłoszeniami}
+
+\subsubsection{Dodanie zgłoszenia}
+
+Użytkownik musi mieć możliwość dodania nowego zgłoszenia do symulacji.
+Można to zrobić przez bezpośrednie wpisanie kodu aplikacji w języku \textbf{qasm}
+w prostym edytorze zapewnionym przez aplikację lub wysłanie pliku z kodem.
+Aplikacja klienta nie sprawdza poprawności semantycznej i składniowej kodu źródłowego
+przed wysłaniem go do symulacji.
+
+\subsubsection{Przeglądanie zgłoszeń}
+
+Użytkownik musi mieć możliwość przeglądania wszystkich jego zgłoszeń.
+Dotyczy to zarówno zgłoszeń zakończonych jak i tych obecnie trwających.
+Aplikacja powinna w czytelny sposób pokazywać jaki jest stan każdego zgłoszenia
+(zakończone, w trakcie realizacji, zakończone z błędem).
+Aplikacja powinna pokazywać dodatkowe informacje o zgłoszeniach ułatwiające
+ich identyfikację (możliwość wyświetlenia kodu źródłowego, czas rozpoczęcia zgłoszenia,
+czas zakończenia zgłoszenia)
+
+\subsubsection{Pobranie historii zgłoszeń}
+
+Jak wspomniano w sekcji \ref{sec:user_func} użytkownik powinien mieć możliwość
+pobrania historii swoich zgłoszeń jako oddzielnego pliku.
+
+\subsubsection{Przeglądanie wyniku zakończonego zgłoszenia}
+
+Jeżeli zgłoszenie zostało zakończone użytkownik powinien mieć możliwość:
+\begin{itemize}
+    \item zobaczenia wyniku symulacji, jeżeli zgłoszenie zakończyło się sukcesem;
+    \item zobaczenia wiadomości błędu, jeżeli zgłoszenie zakończyło się błędem;
+\end{itemize}
+
+\section{Wymagania niefunkcjonalne}
+
+\subsection{Niezawodność}
+
+\subsection{Skalowalność}
+
+\subsection{Bezpieczeństwo}
+
+\subsection{Responsywność}
+
+\subsection{Rozmiar przechowywanych danych}
+
+Użytkownik może wysyłać do przetworzenia pliki lub też samemu wpisywać kod
+źródłowy programy do analizy. Konieczne jest narzucenie limitu na to jakiej 
+wielkości i też ile danych użytkownik może wprowadzić do systemu.
+
