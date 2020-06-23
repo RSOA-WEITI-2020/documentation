@@ -1,0 +1,72 @@
+\newpage
+
+\section{Repozytorium}
+W ramach realizacji projektu zostało wykorzystane repozytorium kodu na platformie github.com jako popularne, standardowe rozwiazanie, na dodatek łatwo dostepne, gdzie wszyscy członkowie zespołu mieli już konta.
+
+\subsection{Monorepo, a wiele repozytoriów}
+Dyskusje w projekcie toczyły sie odnośnie stworzenia jednego wielkiego repozytorium zawierajacego kod wszystkich aplikacji powstałych w ramach projektu.
+
+Ostatecznie wybrany został wariant drugi. Poprzez stworzenie własnej organizacji na githubie osiagnieto pewnego rodzaju przybliżenie warunków pracy do warunków firmowych, z perspektywy organizacji, możliwości nadawania uprawnień i temu podobnych funkcjonalności.
+
+\subsection{Szablony}
+Stworzone zostały 2 repozytoria szablonowe (template), jedno z projektem javascript-owym, drugie z projektem python-owym i skonfigurowanymi CI i CD. Pierwsze zostało wykorzystane do projektu front-endu, z drugiego zostały stworzone aplikacje backend-owe. Każdy z szablonów zawierał także swojego własnego DockerFile-a oraz podział gałezi na develop i master wraz z ustawiona ochrona master-a i innymi ustawieniami.
+
+\subsection{Problemy}
+Szablony okazały sie niedoskonałe. Najwieksza niedogodnościa okazała sie fakt, że po stworzeniu nowego repozytorium z użyciem szablonu oddzielne gałezie develop i master pomimo, że w szablonie miały wspólny korzeń - miały oddzielne, niepołaczone zestawy commit-ów, co sprawiało problemy z merge-owaniem zmian.
+
+Innym pomniejszym problemem okazały sie ustawienia uprawnień organizacji. Mimo ewidentnego ustawienia, że wszyscy członkowie organizacji maja uprawnienia zarówno pisania/czytania do repozytorium jak i merge-owania pull request-ów to niektórzy członkowie z nieodpowiednia rola nie byli w stanie recznie dokonać merge-a.
+
+\newpage
+\section{Continuous Integration}
+
+W celu realizacji continuous integration został wykorzystany mechanizm GitHub Actions dostepny dla każdego repozytorium. Pozwala on na zdefiniowanie zachowania (workflow), wykonywanego w konkretnych sytuacjach, poprzez pliki w formacie YAML w specjalnym folderze w danym repozytorium. To zachowanie może uruchamiać sie na przykład co każdy wypchniety do repozytorium commit lub co każdy commit na konkretna gałaź. 
+
+Zasadniczo każde repozytorium ma skonfigurowane 2 workflow-y. 
+
+\subsubsection{Publish}
+Publish workflow składa sie z nastepujacych kroków:
+
+\begin{itemize}
+    \item checkout gałezi master
+    \item ustawienie wersji na podstawie taga
+    \item docker login
+    \item docker build
+    \item docker push
+\end{itemize}
+
+Wykonywany jest za każdym razem gdy ktoś wypchnie commit-a z tag-iem zaczynajacym sie od "v".
+
+\subsubsection{Test}
+Test workflow składa sie z nastepujacych kroków:
+\begin{itemize}
+    \item checkout gałezi master
+    \item ściagniecie zewnetrznych zależności
+    \item instalacja potrzebnych biblioteki/programów
+    \item uruchomienie testów 
+\end{itemize}
+
+Wykonywane co każdy wypchniety commit. W przypadku python-a - powyższy workflow wykonywany jest dla 3 różnych wersji pythona: 3.6, 3.7, 3.8 odpowiadajace używanym przez członków zespołu wersjach.
+
+\subsection{Problemy}
+Github dostarcza pewnego drobnego rozczarowania także i w tym przypadku. Ponieważ wymaganiem registry docker-owego (na które zostało wykorzystane GitHub Packages) wymagane jest żeby nazwa kontenera zaczynała sie z małej litery. Repozytoria zostały ponazywane z wielkiej litery - spowodowało to, że trzeba było recznie napisać drobne usprawnienie w publish workflow, które powoduje lowercase-owanie nazwy repozytorium. 
+
+\begin{verbatim}
+- name: Login, build and push
+env:
+CONTAINER_IMAGE: docker.pkg.github.com/${{github.repository}}
+/template_app:${{ env.RELEASE_VERSION }}
+run: export CONTAINER_LOWERCASE="${CONTAINER_IMAGE,,}"
+\end{verbatim}
+
+\newpage
+\section{Continuous Delivery}
+Aplikacje uruchamiane sa w obrazach docker-owych z użycie orkiestratora Kubernetes. W projekcie został wykorzystany wariant Minikube. 
+
+Ten dział zaczyna sie od problemów i pewnego sprostowania.
+
+\subsection{Porażka github-a}
+We wcześniejszych sekcjach napisane jest, że w ramach docker-owego registry wykorzystany został Github Packages i do tego miejsca była to prawda. Okazało się jednak, że posiada on pewną olbrzymią wadę. Kubernetes, containerd i tym podobne aplikacje nie są w stanie pobierać obrazów z PUBLICZNYCH repozytoriów github-owych ponieważ wymagana jest autoryzacja z użyciem nazwy użytkownika i hasła.
+
+Nie jest to jedyny problem, jak opisuje to w szerszym kontekście jeden watek na \href{https://github.com/containerd/containerd/issues/3291}{GitHub-ie} containerd problem leży głebiej w API GitHub Packages. Ostatecznie spowodowało to, że zostaliśmy zmuszeni do przejścia na dockerhub-a, a co za tym idzie edycje wszystkich workflow-ów i dodawanie secret-ów w każdym repozytorium.
+
+\subsection{}
